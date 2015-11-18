@@ -2,7 +2,11 @@
   "name": "aac-api",
   "version": "0.0.0",
   "description": "aac",
-  "main": "src/api.module.js",
+  "main": [
+    "src/api.module.js",
+    "src/api.config.js",
+    "src/api.service.js",
+  ],
   "moduleType": [],
   "license": "MIT",
   "homepage": "",
