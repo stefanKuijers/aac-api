@@ -4,8 +4,7 @@
   "description": "aac",
   "main": [
     "src/api.module.js",
-    "src/api.config.js",
-    "src/api.service.js",
+    "src/api.provider.js"
   ],
   "moduleType": [],
   "license": "MIT",
