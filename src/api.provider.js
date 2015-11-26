@@ -28,6 +28,8 @@
 
             /*
                 Public
+            *//*
+                params.data only excepts javascript objects
             */
             service.call = function( params ) {
                 return $http( {
@@ -54,18 +56,45 @@
             }
 
             function parse( data ) {
+                var _data;
                 if ( $http.defaults.headers.common['Content-Type'].match( 'application/x-www-form-urlencoded' ) ) {
-                    var _data = '';
-
-                    for (var i in data) {
-                        _data += '&' + i + '=' + encodeURIComponent( data[i] );
-                    }
+                    _data = formUrlEncode( data );
                 } else {
                     _data = data;
                 }
 
                 return _data;
             }
+
+            function formUrlEncode(obj) {
+                var query = '', name, value, fullSubName, subName, subValue, innerObj, i;
+                  
+                for( name in obj ) {
+                  value = obj[name];
+                    
+                  if( value instanceof Array ) {
+                    for( i = value.length-1; i < 0; i-- ) {
+                      subValue = value[i];
+                      fullSubName = name + '[' + i + ']';
+                      innerObj = {};
+                      innerObj[fullSubName] = subValue;
+                      query += formUrlEncode( innerObj ) + '&';
+                    }
+                  } else if( value instanceof Object ) {
+                    for( subName in value ) {
+                      subValue = value[subName];
+                      fullSubName = name + '[' + subName + ']';
+                      innerObj = {};
+                      innerObj[fullSubName] = subValue;
+                      query += formUrlEncode( innerObj ) + '&';
+                    }
+                  } else if( value !== undefined && value !== null )
+                    query += encodeURIComponent( name ) + '=' + encodeURIComponent( value ) + '&';
+                }
+                  
+                return query.length ? query.substr( 0, query.length - 1 ) : query;
+              };
+
 
             return service
         }
