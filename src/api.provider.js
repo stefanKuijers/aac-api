@@ -17,7 +17,8 @@
         var config = {
             debug: false,
             protocol: 'http://',
-            baseUri: 'localhost/api/'
+            baseUri: 'localhost/api/',
+            defaultHttpMethod: 'GET'
         };
 
         // @ngInject
@@ -32,10 +33,12 @@
                 params.data only excepts javascript objects
             */
             service.call = function( params ) {
+                var _method = params.method || config.defaultHttpMethod;
+
                 return $http( {
-                    method:  params.method || 'GET',
+                    method:  _method,
                     url:     service.baseUrl + (params.url || ''),
-                    data:    parse( params.data )
+                    data:    parse( params.data, _method )
                 } ) .then( 
                     params.resolve || angular.noop,
                     params.reject  || reject,
@@ -55,9 +58,11 @@
                 console.log( 'notify', response );
             }
 
-            function parse( data ) {
+            function parse( data, method ) {
                 var _data;
-                if ( $http.defaults.headers.common['Content-Type'].match( 'application/x-www-form-urlencoded' ) ) {
+
+                // checks or we have set a content type header for the current method
+                if (  $http.defaults.headers[ method.toLowerCase() ]['Content-Type'].match( 'application/x-www-form-urlencoded' ) ) {
                     _data = formUrlEncode( data );
                 } else {
                     _data = data;
