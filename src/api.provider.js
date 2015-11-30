@@ -78,7 +78,7 @@
                   value = obj[name];
                     
                   if( value instanceof Array ) {
-                    for( i = value.length-1; i < 0; i-- ) {
+                    for( i = value.length-1; i >= 0; i-- ) {
                       subValue = value[i];
                       fullSubName = name + '[' + i + ']';
                       innerObj = {};
