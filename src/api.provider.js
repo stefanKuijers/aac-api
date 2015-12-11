@@ -18,7 +18,8 @@
             debug: false,
             protocol: 'http://',
             baseUri: 'localhost/api/',
-            defaultHttpMethod: 'GET'
+            defaultHttpMethod: 'GET',
+            parseArrayAsJson: true
         };
 
         // @ngInject
@@ -78,12 +79,18 @@
                   value = obj[name];
                     
                   if( value instanceof Array ) {
-                    for( i = value.length-1; i >= 0; i-- ) {
-                      subValue = value[i];
-                      fullSubName = name + '[' + i + ']';
-                      innerObj = {};
-                      innerObj[fullSubName] = subValue;
-                      query += formUrlEncode( innerObj ) + '&';
+                    if ( config.parseArrayAsJson ) {
+                        var urlComponent = {};
+                        urlComponent[name] = JSON.stringify( value );
+                        query += formUrlEncode( urlComponent ) + '&';
+                    } else {
+                        for( i = value.length-1; i >= 0; i-- ) {
+                          subValue = value[i];
+                          fullSubName = name + '[' + i + ']';
+                          innerObj = {};
+                          innerObj[fullSubName] = subValue;
+                          query += formUrlEncode( innerObj ) + '&';
+                        }
                     }
                   } else if( value instanceof Object ) {
                     for( subName in value ) {
